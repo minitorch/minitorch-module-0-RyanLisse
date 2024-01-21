@@ -30,30 +30,48 @@ class Module:
         return list(m.values())
 
     def train(self) -> None:
-        "Set the mode of this module and all descendent modules to `train`."
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        """
+        Set the mode of this module and all descendent modules to `train`.
+        """
+        self.training = True
+        for module in self._modules.values():
+            module.train()
 
     def eval(self) -> None:
-        "Set the mode of this module and all descendent modules to `eval`."
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        """
+        Set the mode of this module and all descendent modules to `eval`.
+        """
+        self.training = False
+        for module in self._modules.values():
+            module.eval()
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
         """
         Collect all the parameters of this module and its descendents.
 
-
         Returns:
-            The name and `Parameter` of each ancestor parameter.
+            A sequence of tuples, each containing the name and the `Parameter` object
+            of each parameter in the module and its descendents.
         """
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        params = []
+        for name, param in self._parameters.items():
+            params.append((name, param))
+        for name, module in self._modules.items():
+            for sub_name, sub_param in module.named_parameters():
+                params.append((f"{name}.{sub_name}", sub_param))
+        return params
 
     def parameters(self) -> Sequence[Parameter]:
-        "Enumerate over all the parameters of this module and its descendents."
-        # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        """
+        Enumerate over all the parameters of this module and its descendents.
+
+        Returns:
+            A sequence of all `Parameter` objects in the module and its descendents.
+        """
+        params = list(self._parameters.values())
+        for module in self._modules.values():
+            params.extend(module.parameters())
+        return params
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """
@@ -79,23 +97,24 @@ class Module:
             super().__setattr__(key, val)
 
     def __getattr__(self, key: str) -> Any:
-        if key in self.__dict__["_parameters"]:
-            return self.__dict__["_parameters"][key]
-
-        if key in self.__dict__["_modules"]:
-            return self.__dict__["_modules"][key]
-        return None
+        if key in self._parameters:
+            return self._parameters[key]
+        elif key in self._modules:
+            return self._modules[key]
+        raise AttributeError(
+            f"'{self.__class__.__name__}' object has no attribute '{key}'"
+        )
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         return self.forward(*args, **kwargs)
 
     def __repr__(self) -> str:
-        def _addindent(s_: str, numSpaces: int) -> str:
+        def _addindent(s_: str, num_spaces: int) -> str:
             s2 = s_.split("\n")
             if len(s2) == 1:
                 return s_
             first = s2.pop(0)
-            s2 = [(numSpaces * " ") + line for line in s2]
+            s2 = [(num_spaces * " ") + line for line in s2]
             s = "\n".join(s2)
             s = first + "\n" + s
             return s
