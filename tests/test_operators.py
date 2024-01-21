@@ -19,7 +19,8 @@ from minitorch.operators import (
     relu,
     relu_back,
     sigmoid,
-    add_lists, neg_list,
+    add_lists,
+    neg_list,
 )
 
 from .strategies import assert_close, small_floats
@@ -107,7 +108,6 @@ def test_sigmoid(a: float) -> None:
     assert_close(sigmoid(-a), 1 - sigmoid_value)
     assert_close(sigmoid_value, 0.5) if a == 0 else None
     assert sigmoid(a - 0.1) <= sigmoid_value <= sigmoid(a + 0.1)
-
 
 
 @pytest.mark.task0_2
@@ -207,7 +207,7 @@ def test_one_args(fn: Tuple[str, Callable[[float], float]], t1: float) -> None:
 @given(small_floats, small_floats)
 @pytest.mark.parametrize("fn", two_arg)
 def test_two_args(
-        fn: Tuple[str, Callable[[float, float], float]], t1: float, t2: float
+    fn: Tuple[str, Callable[[float, float], float]], t1: float, t2: float
 ) -> None:
     name, base_fn = fn
     base_fn(t1, t2)
