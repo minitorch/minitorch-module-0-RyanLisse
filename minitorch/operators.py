@@ -81,20 +81,17 @@ def is_close(x: float, y: float) -> float:
 def sigmoid(x: float) -> float:
     """
     Compute the sigmoid function in a numerically stable way.
-
-    Args:
-        x (float): Input value.
-
-    Returns:
-        float: The sigmoid of x.
+    f(x) = 1 / (1 + exp(-x)) for x >= 0
+    f(x) = exp(x) / (1 + exp(x)) for x < 0
+    Based on the sigmoid activation function.
     """
     if x >= 0:
         z = math.exp(-x)
         return 1.0 / (1.0 + z)
     else:
-        # Use exp(x) directly as it's safe and avoids the need for two exp() calls
         z = math.exp(x)
         return z / (1.0 + z)
+
 
 def relu(x: float) -> float:
     """
@@ -126,7 +123,7 @@ def exp(x: float) -> float:
 def log_back(x: float, d: float) -> float:
     """
     Backward pass for logarithm.
-    f'(x) = d / (x + EPS)
+    f(x) = d / (x + EPS)
     Based on the derivative of the logarithm.
     """
     return d / (x + EPS)
@@ -144,7 +141,7 @@ def inv(x: float) -> float:
 def inv_back(x: float, d: float) -> float:
     """
     Backward pass for inverse.
-    f'(x) = -d / (x^2)
+    f(x) = -d / (x^2)
     Based on the derivative of the inverse function.
     """
     return -d / (x * x) ** 2
@@ -153,7 +150,7 @@ def inv_back(x: float, d: float) -> float:
 def relu_back(x: float, d: float) -> float:
     """
     Backward pass for rectified linear unit.
-    f'(x) = d if x > 0 else 0
+    f(x) = d if x > 0 else 0
     Based on the derivative of the ReLU function.
     """
     return d if x > 0 else 0.0
@@ -176,7 +173,7 @@ def neg_list(ls: Iterable[float]) -> List[float]:
 
 
 def zip_with(
-        fn: Callable[[float, float], float], ls1: Iterable[float], ls2: Iterable[float]
+    fn: Callable[[float, float], float], ls1: Iterable[float], ls2: Iterable[float]
 ) -> List[float]:
     """
     Apply a function to pairs of elements from two lists.
@@ -194,7 +191,7 @@ def add_lists(ls1: Iterable[float], ls2: Iterable[float]) -> List[float]:
 
 
 def reduce_function(
-        fn: Callable[[float, float], float], start: float, ls: Iterable[float]
+    fn: Callable[[float, float], float], start: float, ls: Iterable[float]
 ) -> float:
     """
     Reduce a list to a single value using a binary function.
@@ -206,7 +203,7 @@ def reduce_function(
     return result
 
 
-def sum_list(ls: Iterable[float]) -> float:
+def sum(ls: Iterable[float]) -> float:
     """
     Sum up a list.
     Utilizes the reduce function with addition.
@@ -214,7 +211,7 @@ def sum_list(ls: Iterable[float]) -> float:
     return reduce_function(add, 0.0, ls)
 
 
-def prod_list(ls: Iterable[float]) -> float:
+def prod(ls: Iterable[float]) -> float:
     """
     Calculate the product of a list.
     Utilizes the reduce function with multiplication.
