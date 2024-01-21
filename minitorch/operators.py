@@ -1,7 +1,9 @@
 import math
 from typing import Callable, Iterable, List
 
-EPS = 1e-6  # Small constant to avoid division by zero in logarithm and inverse functions
+EPS = (
+    1e-6  # Small constant to avoid division by zero in logarithm and inverse functions
+)
 
 
 def mul(x: float, y: float) -> float:
@@ -78,12 +80,21 @@ def is_close(x: float, y: float) -> float:
 
 def sigmoid(x: float) -> float:
     """
-    Return the sigmoid of x.
-    f(x) = 1 / (1 + e^(-x))
-    Based on the sigmoid function.
-    """
-    return 1.0 / (1.0 + math.exp(-x)) if x >= 0 else math.exp(x) / (1.0 + math.exp(x))
+    Compute the sigmoid function in a numerically stable way.
 
+    Args:
+        x (float): Input value.
+
+    Returns:
+        float: The sigmoid of x.
+    """
+    if x >= 0:
+        z = math.exp(-x)
+        return 1.0 / (1.0 + z)
+    else:
+        # Use exp(x) directly as it's safe and avoids the need for two exp() calls
+        z = math.exp(x)
+        return z / (1.0 + z)
 
 def relu(x: float) -> float:
     """
@@ -164,7 +175,9 @@ def neg_list(ls: Iterable[float]) -> List[float]:
     return map_function(neg, ls)
 
 
-def zip_with(fn: Callable[[float, float], float], ls1: Iterable[float], ls2: Iterable[float]) -> List[float]:
+def zip_with(
+        fn: Callable[[float, float], float], ls1: Iterable[float], ls2: Iterable[float]
+) -> List[float]:
     """
     Apply a function to pairs of elements from two lists.
     Based on the zipWith function in functional programming.
@@ -180,7 +193,9 @@ def add_lists(ls1: Iterable[float], ls2: Iterable[float]) -> List[float]:
     return zip_with(add, ls1, ls2)
 
 
-def reduce_function(fn: Callable[[float, float], float], start: float, ls: Iterable[float]) -> float:
+def reduce_function(
+        fn: Callable[[float, float], float], start: float, ls: Iterable[float]
+) -> float:
     """
     Reduce a list to a single value using a binary function.
     Based on the reduce function in functional programming.

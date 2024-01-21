@@ -101,12 +101,13 @@ def test_eq(a: float) -> None:
 
 @pytest.mark.task0_2
 @given(small_floats)
-def test_sigmoid(a: float, b: float) -> None:
+def test_sigmoid(a: float) -> None:
     sigmoid_value = sigmoid(a)
     assert 0.0 <= sigmoid_value <= 1.0
     assert_close(sigmoid(-a), 1 - sigmoid_value)
     assert_close(sigmoid_value, 0.5) if a == 0 else None
-    assert sigmoid(a) < sigmoid(b) if a < b else None
+    assert sigmoid(a - 0.1) <= sigmoid_value <= sigmoid(a + 0.1)
+
 
 
 @pytest.mark.task0_2
